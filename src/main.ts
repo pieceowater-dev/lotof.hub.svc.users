@@ -9,7 +9,7 @@ bootstrap(AppModule, {
     {
       transport: Transport.RMQ,
       urlEnvVars: ['RABBITMQ_URL'],
-      queue: 'template_queue',
+      queue: 'users_queue',
     },
   ],
 }).then((r) => console.log('Booted successfully 🚀'));
