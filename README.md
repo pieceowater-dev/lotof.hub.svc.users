@@ -1,4 +1,4 @@
-# lotof.template.service
+# lotof.hub.svc.users
 
 ## Description
 🚀 This project is a microservice built using the NestJS framework. It serves as a central point for handling requests and routing them to appropriate microservices. The microservice also integrates with RabbitMQ for message brokering.
