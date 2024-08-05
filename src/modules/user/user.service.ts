@@ -6,6 +6,7 @@ import { DefaultFilter } from '../../utils/default.filter';
 import { PaginatedEntity } from '../../utils/paginated.entity';
 import { toPaginated } from '../../utils/toPaginated';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class UserService {
@@ -15,7 +16,7 @@ export class UserService {
   ) {}
 
   async create(data: CreateUserDto): Promise<User> {
-    return await this.userRepository.save(data);
+    return await this.userRepository.save(plainToInstance(User, data));
   }
 
   async findAll(data: DefaultFilter<User>): Promise<PaginatedEntity<User>> {
@@ -40,6 +41,8 @@ export class UserService {
   }
 
   async update(id: string, data: UpdateUserDto): Promise<User> {
-    return await this.userRepository.save({ id, ...data });
+    return await this.userRepository.save(
+      plainToInstance(User, { id, ...data }),
+    );
   }
 }
