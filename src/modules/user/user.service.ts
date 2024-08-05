@@ -7,6 +7,7 @@ import { PaginatedEntity } from '../../utils/paginated.entity';
 import { toPaginated } from '../../utils/toPaginated';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { plainToInstance } from 'class-transformer';
+import { ServiceError } from '@pieceowater-dev/lotof.lib.broadcaster';
 
 @Injectable()
 export class UserService {
@@ -15,8 +16,15 @@ export class UserService {
     private userRepository: Repository<User>,
   ) {}
 
-  async create(data: CreateUserDto): Promise<User> {
-    return await this.userRepository.save(plainToInstance(User, data));
+  async create(data: CreateUserDto): Promise<User | void> {
+    return await this.userRepository
+      .save(plainToInstance(User, data))
+      .catch((err) => {
+        if (err.message.includes('duplicate')) {
+          throw new ServiceError('Email is exists');
+        }
+        throw err;
+      });
   }
 
   async findAll(data: DefaultFilter<User>): Promise<PaginatedEntity<User>> {
