@@ -1,10 +1,6 @@
-import {
-  Column,
-  Entity,
-  PrimaryGeneratedColumn,
-  BeforeInsert,
-  BeforeUpdate,
-} from 'typeorm';
+import { Column, OneToMany, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Friendship } from '../../friendship/entities/friendship.entity';
+import { BeforeInsert, BeforeUpdate } from 'typeorm';
 import { hashSync, genSaltSync } from 'bcrypt';
 
 @Entity()
@@ -20,6 +16,12 @@ export class User {
 
   @Column({ select: false })
   password: string;
+
+  @OneToMany(() => Friendship, (friendship) => friendship.user)
+  friendships: Friendship[];
+
+  @OneToMany(() => Friendship, (friendship) => friendship.friend)
+  friends: Friendship[];
 
   @BeforeInsert()
   @BeforeUpdate()
