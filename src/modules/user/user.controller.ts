@@ -5,6 +5,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { DefaultFilter } from '../../utils/default.filter';
 import { User } from './entities/user.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { ID } from '../../utils/ID';
 
 @Controller()
 export class UserController {
@@ -18,6 +19,11 @@ export class UserController {
   @MessagePattern('findAllUser')
   findAll(data: DefaultFilter<User>) {
     return this.userService.findAll(data);
+  }
+
+  @MessagePattern('findOneUser')
+  findOne({ id }: ID) {
+    return this.userService.findOne(id);
   }
 
   @MessagePattern('updateUser')

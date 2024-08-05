@@ -35,6 +35,10 @@ export class UserService {
       .then(toPaginated<User>);
   }
 
+  async findOne(id: string): Promise<User> {
+    return await this.userRepository.findOneBy({ id });
+  }
+
   async update(id: string, data: UpdateUserDto): Promise<User> {
     return await this.userRepository.save({ id, ...data });
   }
