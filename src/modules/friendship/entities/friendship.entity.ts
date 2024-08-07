@@ -7,10 +7,10 @@ export class Friendship {
   id: number;
 
   @ManyToOne(() => User, (user) => user.friendships)
-  @JoinColumn({ name: 'user_id' })
+  @JoinColumn()
   user: User;
 
   @ManyToOne(() => User, (user) => user.friends)
-  @JoinColumn({ name: 'friend_id' })
+  @JoinColumn()
   friend: User;
 }

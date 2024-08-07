@@ -30,7 +30,4 @@ export class User {
       this.password = hashSync(this.password, genSaltSync());
     }
   }
-
-  //   @Column()
-  //   security: string;
 }

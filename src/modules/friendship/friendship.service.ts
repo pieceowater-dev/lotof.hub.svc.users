@@ -1,9 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Friendship } from './entities/friendship.entity';
 import { CreateFriendshipDto } from './dto/create-friendship.dto';
-import { UpdateFriendshipDto } from './dto/update-friendship.dto';
 import { User } from '../user/entities/user.entity';
 
 @Injectable()
@@ -15,7 +13,7 @@ export class FriendshipService {
     private userRepository: Repository<User>,
   ) {}
 
-  async create(createFriendshipDto: CreateFriendshipDto) {
+  async create(createFriendshipDto: CreateFriendshipDto): Promise<Friendship> {
     const user = await this.userRepository.findOne({
       where: { id: createFriendshipDto.userId },
     });
@@ -35,11 +33,12 @@ export class FriendshipService {
     return this.friendshipRepository.save(friendship);
   }
 
-  findAll() {
-    return this.friendshipRepository.find({ relations: ['user', 'friend'] });
-  }
-
-  update(id: number, updateFriendshipDto: UpdateFriendshipDto) {
-    return this.friendshipRepository.update(id, updateFriendshipDto);
+  async findFriends(userId: string): Promise<Friendship[]> {
+    //TODO: solve why IDE is not recognizing userId in where clause but works fine and lints fine. lol, wtf
+    console.log(userId);
+    return this.friendshipRepository.find({
+      where: { user: { id: userId } },
+      relations: ['friend'],
+    });
   }
 }
