@@ -34,7 +34,6 @@ export class FriendshipService {
   }
 
   async findFriends(userId: string): Promise<Friendship[]> {
-    console.log(userId);
     return this.friendshipRepository.find({
       where: { user: { id: userId } },
       relations: ['friend'],
