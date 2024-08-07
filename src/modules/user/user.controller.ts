@@ -2,7 +2,6 @@ import { Controller, UseFilters, UsePipes } from '@nestjs/common';
 import { UserService } from './user.service';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { CreateUserDto } from './dto/create-user.dto';
-// import { DefaultFilter } from '../../utils/common/default.filter';
 import { User } from './entities/user.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserUuid } from '../../utils/user/user-uuid';
