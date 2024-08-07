@@ -6,6 +6,7 @@ import {
   BeforeUpdate,
 } from 'typeorm';
 import { hashSync, genSaltSync } from 'bcrypt';
+import { UserState } from '../../../utils/user/user-state.util';
 
 @Entity()
 export class User {
@@ -31,4 +32,10 @@ export class User {
 
   //   @Column()
   //   security: string;
+
+  @Column({ nullable: true, default: UserState.SUSPENDED })
+  state: UserState;
+
+  @Column({ default: false })
+  dead: boolean; // user is deleted
 }

@@ -2,10 +2,10 @@ import { Controller, UseFilters, UsePipes } from '@nestjs/common';
 import { UserService } from './user.service';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { CreateUserDto } from './dto/create-user.dto';
-import { DefaultFilter } from '../../utils/default.filter';
+import { DefaultFilter } from '../../utils/common/default.filter';
 import { User } from './entities/user.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ID } from '../../utils/ID';
+import { UserUuid } from '../../utils/user/user-uuid';
 import {
   ExceptionFilter,
   ServiceRequestTimeoutPipe,
@@ -28,7 +28,7 @@ export class UserController {
   }
 
   @MessagePattern('findOneUser')
-  findOne({ id }: ID) {
+  findOne({ id }: UserUuid) {
     return this.userService.findOne(id);
   }
 
