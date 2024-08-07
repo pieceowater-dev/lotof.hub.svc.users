@@ -34,7 +34,6 @@ export class FriendshipService {
   }
 
   async findFriends(userId: string): Promise<Friendship[]> {
-    //TODO: solve why IDE is not recognizing userId in where clause but works fine and lints fine. lol, wtf
     console.log(userId);
     return this.friendshipRepository.find({
       where: { user: { id: userId } },
