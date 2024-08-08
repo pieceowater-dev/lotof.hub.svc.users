@@ -22,6 +22,12 @@ export class User {
   @Column({ select: false })
   password: string;
 
+  @Column({ nullable: true, default: UserState.SUSPENDED })
+  state: UserState;
+
+  @Column({ default: false })
+  deleted: boolean;
+
   @BeforeInsert()
   @BeforeUpdate()
   passwordCrypt() {
@@ -29,13 +35,4 @@ export class User {
       this.password = hashSync(this.password, genSaltSync());
     }
   }
-
-  //   @Column()
-  //   security: string;
-
-  @Column({ nullable: true, default: UserState.SUSPENDED })
-  state: UserState;
-
-  @Column({ default: false })
-  dead: boolean; // user is deleted
 }
