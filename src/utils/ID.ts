@@ -1,3 +1,3 @@
-export interface ID {
-  id: string;
+export interface ID<T = string> {
+  id: T;
 }

@@ -1,5 +1,10 @@
-import { Column, OneToMany, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { Friendship } from '../../friendship/entities/friendship.entity';
+import {
+  Column,
+  JoinTable,
+  Entity,
+  PrimaryGeneratedColumn,
+  ManyToMany,
+} from 'typeorm';
 import { BeforeInsert, BeforeUpdate } from 'typeorm';
 import { hashSync, genSaltSync } from 'bcrypt';
 
@@ -17,11 +22,19 @@ export class User {
   @Column({ select: false })
   password: string;
 
-  @OneToMany(() => Friendship, (friendship) => friendship.user)
-  friendships: Friendship[];
-
-  @OneToMany(() => Friendship, (friendship) => friendship.friend)
-  friends: Friendship[];
+  @ManyToMany(() => User, (user) => user.friends)
+  @JoinTable({
+    name: 'friendships',
+    joinColumn: {
+      name: 'userId',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'friendId',
+      referencedColumnName: 'id',
+    },
+  })
+  friends: User[];
 
   @BeforeInsert()
   @BeforeUpdate()

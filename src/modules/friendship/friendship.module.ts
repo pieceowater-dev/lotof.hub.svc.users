@@ -3,11 +3,11 @@ import { FriendshipService } from './friendship.service';
 import { FriendshipController } from './friendship.controller';
 import { DatabaseModule } from '../../core/database/database.module';
 import { friendshipProvider } from './friendship.provider';
-import { userProvider } from '../user/user.provider';
+import { UserModule } from '../user/user.module';
 
 @Module({
-  imports: [DatabaseModule],
+  imports: [DatabaseModule, UserModule],
   controllers: [FriendshipController],
-  providers: [...friendshipProvider, ...userProvider, FriendshipService],
+  providers: [...friendshipProvider, FriendshipService],
 })
 export class FriendshipModule {}

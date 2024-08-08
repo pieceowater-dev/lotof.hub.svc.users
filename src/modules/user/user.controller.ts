@@ -28,6 +28,11 @@ export class UserController {
     return this.userService.findOne(id);
   }
 
+  @MessagePattern('findOneUserWithFriends')
+  findOneWithFriends({ id }: ID) {
+    return this.userService.findOneWithFriends(id);
+  }
+
   @MessagePattern('updateUser')
   update(@Payload() data: UpdateUserDto) {
     return this.userService.update(data.id, data);

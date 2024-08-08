@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { User } from './entities/user.entity';
-import { ILike, Repository } from 'typeorm';
+import { ILike, Repository, EntityManager } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { DefaultFilter } from '../../utils/default.filter';
 import { PaginatedEntity } from '../../utils/paginated.entity';
@@ -48,9 +48,38 @@ export class UserService {
     return await this.userRepository.findOneBy({ id });
   }
 
+  async findOneWithFriends(id: string): Promise<User> {
+    return await this.userRepository.findOne({
+      relations: ['friends'],
+      where: { id },
+    });
+  }
+
   async update(id: string, data: UpdateUserDto): Promise<User> {
     return await this.userRepository.save(
       plainToInstance(User, { id, ...data }),
     );
+  }
+
+  async addFriend(
+    user: User,
+    friend: User,
+    opt?: { entityManager?: EntityManager },
+  ): Promise<'OK'> {
+    if (opt?.entityManager) {
+      return await opt?.entityManager
+        .getRepository(User)
+        .createQueryBuilder()
+        .relation(User, 'friends')
+        .of(user)
+        .add(friend)
+        .then(() => 'OK');
+    }
+    return await this.userRepository
+      .createQueryBuilder()
+      .relation(User, 'friends')
+      .of(user)
+      .add(friend)
+      .then(() => 'OK');
   }
 }

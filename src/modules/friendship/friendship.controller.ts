@@ -9,12 +9,12 @@ export class FriendshipController {
   constructor(private readonly friendshipService: FriendshipService) {}
 
   @MessagePattern('createFriendship')
-  create(@Payload() data: CreateFriendshipDto) {
-    return this.friendshipService.create(data);
+  createRequest(@Payload() data: CreateFriendshipDto) {
+    return this.friendshipService.createRequest(data);
   }
 
-  @MessagePattern('findFriends')
-  findFriends(@Payload() { id }: ID) {
-    return this.friendshipService.findFriends(id);
+  @MessagePattern('createFriendship')
+  removeRequest(@Payload() { id }: ID<number>) {
+    return this.friendshipService.acceptRequestByID(id);
   }
 }
