@@ -13,6 +13,16 @@
 
 
 ## Installation
+### Docker Installation
+To pull the Docker image from the GitHub Container Registry:
+
+1 - Login to ghcr.io
+```bash
+echo "YOUR_GITHUB_TOKEN" | docker login ghcr.io -u YOUR_GITHUB_USERNAME --password-stdin
+```
+2 - Go to [GitHub Packages](https://github.com/orgs/pieceowater-dev/packages) menu and copy the command to pull the image
+
+### Manual Installation
 To install the dependencies, run:
 ```bash
 npm install
