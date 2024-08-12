@@ -35,8 +35,8 @@ export class UserService {
             ? ILike(`%${data.search?.toLowerCase()}%`)
             : undefined,
         },
-        skip: data.pagination.page * data.pagination.length,
-        take: data.pagination.length,
+        skip: data.pagination.page * data.pagination.len,
+        take: data.pagination.len,
         order: {
           [data.sort.field ?? 'id']: data.sort.by ?? 'DESC',
         },

@@ -21,12 +21,13 @@ export enum FilterPaginationLengthEnum {
 }
 
 export class Sort<T> {
-  by?: 'ASC' | 'DESC' = 'ASC';
+  by?: 'ASC' | 'DESC';
   field?: keyof T;
+  nulls?: 'first' | 'last';
 }
 
 export class Paginated {
-  length?: FilterPaginationLengthEnum = FilterPaginationLengthEnum.TEN;
+  len?: FilterPaginationLengthEnum = FilterPaginationLengthEnum.TEN;
   page?: number = 0;
 }
 

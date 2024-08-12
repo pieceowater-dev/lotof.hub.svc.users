@@ -1,11 +1,14 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { EntityManager, Repository, DataSource } from 'typeorm';
+import { EntityManager, Repository, DataSource, ILike } from 'typeorm';
 import { CreateFriendshipDto } from './dto/create-friendship.dto';
 import { Friendship } from './entities/friendship.entity';
 import { plainToInstance } from 'class-transformer';
 import { User } from '../user/entities/user.entity';
 import { ServiceError } from '@pieceowater-dev/lotof.lib.broadcaster';
 import { UserService } from '../user/user.service';
+import { PaginatedEntity } from '../../utils/paginated.entity';
+import { toPaginated } from '../../utils/toPaginated';
+import { FriendshipFilter } from './entities/friendship.filter';
 
 @Injectable()
 export class FriendshipService {
@@ -38,7 +41,27 @@ export class FriendshipService {
   }
 
   async acceptRequestByID(id: number) {
-    return await this.acceptRequest(await this.findFriendById(id));
+    return await this.acceptRequest(await this.findFriendRequestById(id));
+  }
+
+  async getRequestList(
+    friendshipFilter: FriendshipFilter,
+  ): Promise<PaginatedEntity<Friendship>> {
+    return await this.friendshipRepository
+      .findAndCount({
+        relations: ['userId', 'friendId'],
+        where: {
+          friendId: plainToInstance(User, {
+            username: friendshipFilter.search
+              ? ILike(`%${friendshipFilter.search}%`)
+              : undefined,
+          }),
+        },
+        order: friendshipFilter.order,
+        take: friendshipFilter.take,
+        skip: friendshipFilter.skip,
+      })
+      .then((r) => toPaginated<Friendship>(r));
   }
 
   private async acceptRequest(request: Friendship): Promise<'OK'> {
@@ -74,7 +97,7 @@ export class FriendshipService {
     });
   }
 
-  private async findFriendById(id: number): Promise<Friendship | null> {
+  private async findFriendRequestById(id: number): Promise<Friendship | null> {
     return await this.friendshipRepository.findOne({
       relations: ['userId', 'friendId'],
       where: { id },
