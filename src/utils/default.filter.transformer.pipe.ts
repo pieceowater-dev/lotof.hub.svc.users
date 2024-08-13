@@ -1,14 +1,21 @@
 import { ArgumentMetadata, PipeTransform } from '@nestjs/common';
 import { DefaultFilter } from './default.filter';
-import { SortObj } from './transformed.default.filter';
+import {
+  SortObj,
+  TransformedDefaultFilter,
+} from './transformed.default.filter';
 
-export class DefaultFilterTransformerPipe<Entity, OutgoingFilter = any>
-  implements PipeTransform<DefaultFilter<Entity>, OutgoingFilter>
+export class DefaultFilterTransformerPipe<Entity, FilterEntity>
+  implements
+    PipeTransform<
+      DefaultFilter<Entity> & FilterEntity,
+      TransformedDefaultFilter<Entity> & FilterEntity
+    >
 {
   transform(
-    value: DefaultFilter<Entity>,
+    value: DefaultFilter<Entity> & FilterEntity,
     metadata: ArgumentMetadata,
-  ): OutgoingFilter {
+  ): TransformedDefaultFilter<Entity> & FilterEntity {
     console.log(metadata);
 
     const order = value.sort?.field
@@ -21,6 +28,7 @@ export class DefaultFilterTransformerPipe<Entity, OutgoingFilter = any>
       : undefined;
 
     return {
+      ...value,
       search: value.search,
       order,
       take: value.pagination?.len ?? 25,
