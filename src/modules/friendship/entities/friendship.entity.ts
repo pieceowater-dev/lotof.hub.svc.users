@@ -7,8 +7,8 @@ export class Friendship {
   id: number;
 
   @ManyToOne(() => User, (user) => user.id)
-  userId: User;
+  user: User;
 
   @ManyToOne(() => User, (user) => user.id)
-  friendId: User;
+  friend: User;
 }

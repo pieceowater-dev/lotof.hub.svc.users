@@ -16,19 +16,19 @@ export class FriendshipController {
     return this.friendshipService.createRequest(data);
   }
 
-  @MessagePattern('createFriendship')
-  applyRequest(@Payload() { id }: ID<number>) {
+  @MessagePattern('acceptRequest')
+  acceptRequest(@Payload() { id }: ID<number>) {
     return this.friendshipService.acceptRequestByID(id);
+  }
+
+  @MessagePattern('removeRequest')
+  removeRequest(@Payload() { id }: ID<number>) {
+    return this.friendshipService.removeRequest(id);
   }
 
   @UsePipes(new DefaultFilterTransformerPipe<Friendship, FriendshipFilter>())
   @MessagePattern('getFriendshipRequestList')
   getRequestList(@Payload() friendshipFilter: FriendshipFilter) {
     return this.friendshipService.getRequestList(friendshipFilter);
-  }
-
-  @MessagePattern('createFriendship')
-  removeRequest(@Payload() { id }: ID<number>) {
-    return this.friendshipService.acceptRequestByID(id);
   }
 }

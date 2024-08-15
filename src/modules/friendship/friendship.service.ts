@@ -31,8 +31,8 @@ export class FriendshipService {
     }
 
     if (
-      existsRequest.userId.id === createFriendshipDto.userId &&
-      existsRequest.friendId.id === createFriendshipDto.friendId
+      existsRequest.user.id === createFriendshipDto.userId &&
+      existsRequest.friend.id === createFriendshipDto.friendId
     ) {
       throw new ServiceError('Request is exists');
     }
@@ -49,9 +49,9 @@ export class FriendshipService {
   ): Promise<PaginatedEntity<Friendship>> {
     return await this.friendshipRepository
       .findAndCount({
-        relations: ['userId', 'friendId'],
+        relations: ['user', 'friend'],
         where: {
-          friendId: plainToInstance(User, {
+          friend: plainToInstance(User, {
             username: friendshipFilter.search
               ? ILike(`%${friendshipFilter.search}%`)
               : undefined,
@@ -64,14 +64,21 @@ export class FriendshipService {
       .then((r) => toPaginated<Friendship>(r));
   }
 
+  async removeRequest(id: number, opt?: { entityManager?: EntityManager }) {
+    if (opt?.entityManager) {
+      return opt.entityManager.getRepository(Friendship).delete(id);
+    }
+    return await this.friendshipRepository.delete(id);
+  }
+
   private async acceptRequest(request: Friendship): Promise<'OK'> {
     return await this.dataSource.transaction(
       async (entityManager): Promise<'OK'> => {
         await this.removeRequest(request.id, { entityManager });
-        await this.userService.addFriend(request.userId, request.friendId, {
+        await this.userService.addFriend(request.user, request.friend, {
           entityManager,
         });
-        await this.userService.addFriend(request.friendId, request.userId, {
+        await this.userService.addFriend(request.friend, request.user, {
           entityManager,
         });
         return 'OK';
@@ -83,15 +90,15 @@ export class FriendshipService {
     createFriendshipDto: CreateFriendshipDto,
   ): Promise<Friendship | null> {
     return await this.friendshipRepository.findOne({
-      relations: ['userId', 'friendId'],
+      relations: ['user', 'friend'],
       where: [
         {
-          userId: plainToInstance(User, { id: createFriendshipDto.userId }),
-          friendId: plainToInstance(User, { id: createFriendshipDto.friendId }),
+          user: plainToInstance(User, { id: createFriendshipDto.userId }),
+          friend: plainToInstance(User, { id: createFriendshipDto.friendId }),
         },
         {
-          userId: plainToInstance(User, { id: createFriendshipDto.friendId }),
-          friendId: plainToInstance(User, { id: createFriendshipDto.userId }),
+          user: plainToInstance(User, { id: createFriendshipDto.friendId }),
+          friend: plainToInstance(User, { id: createFriendshipDto.userId }),
         },
       ],
     });
@@ -102,15 +109,5 @@ export class FriendshipService {
       relations: ['userId', 'friendId'],
       where: { id },
     });
-  }
-
-  private async removeRequest(
-    id: number,
-    opt?: { entityManager?: EntityManager },
-  ) {
-    if (opt?.entityManager) {
-      return opt.entityManager.getRepository(Friendship).delete(id);
-    }
-    return await this.friendshipRepository.delete(id);
   }
 }
