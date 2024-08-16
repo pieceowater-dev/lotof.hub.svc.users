@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { EntityManager, Repository, DataSource, ILike } from 'typeorm';
+import { DataSource, EntityManager, ILike, Repository } from 'typeorm';
 import { CreateFriendshipDto } from './dto/create-friendship.dto';
 import { Friendship } from './entities/friendship.entity';
 import { plainToInstance } from 'class-transformer';
@@ -9,6 +9,7 @@ import { UserService } from '../user/user.service';
 import { PaginatedEntity } from '../../utils/paginated.entity';
 import { toPaginated } from '../../utils/toPaginated';
 import { FriendshipFilter } from './entities/friendship.filter';
+import { InOut } from './enum/InOut';
 
 @Injectable()
 export class FriendshipService {
@@ -31,8 +32,8 @@ export class FriendshipService {
     }
 
     if (
-      existsRequest.user.id === createFriendshipDto.userId &&
-      existsRequest.friend.id === createFriendshipDto.friendId
+      existsRequest.user.id === createFriendshipDto.user &&
+      existsRequest.friend.id === createFriendshipDto.friend
     ) {
       throw new ServiceError('Request is exists');
     }
@@ -50,13 +51,28 @@ export class FriendshipService {
     return await this.friendshipRepository
       .findAndCount({
         relations: ['user', 'friend'],
-        where: {
-          friend: plainToInstance(User, {
-            username: friendshipFilter.search
-              ? ILike(`%${friendshipFilter.search}%`)
-              : undefined,
-          }),
-        },
+        where:
+          friendshipFilter.inout === InOut.IN
+            ? {
+                friend: plainToInstance(User, {
+                  username: friendshipFilter.search
+                    ? ILike(`%${friendshipFilter.search}%`)
+                    : undefined,
+                }),
+                user: plainToInstance(User, {
+                  id: friendshipFilter.userId,
+                }),
+              }
+            : {
+                user: plainToInstance(User, {
+                  username: friendshipFilter.search
+                    ? ILike(`%${friendshipFilter.search}%`)
+                    : undefined,
+                }),
+                friend: plainToInstance(User, {
+                  id: friendshipFilter.userId,
+                }),
+              },
         order: friendshipFilter.order,
         take: friendshipFilter.take,
         skip: friendshipFilter.skip,
@@ -93,12 +109,12 @@ export class FriendshipService {
       relations: ['user', 'friend'],
       where: [
         {
-          user: plainToInstance(User, { id: createFriendshipDto.userId }),
-          friend: plainToInstance(User, { id: createFriendshipDto.friendId }),
+          user: plainToInstance(User, { id: createFriendshipDto.user }),
+          friend: plainToInstance(User, { id: createFriendshipDto.friend }),
         },
         {
-          user: plainToInstance(User, { id: createFriendshipDto.friendId }),
-          friend: plainToInstance(User, { id: createFriendshipDto.userId }),
+          user: plainToInstance(User, { id: createFriendshipDto.friend }),
+          friend: plainToInstance(User, { id: createFriendshipDto.user }),
         },
       ],
     });

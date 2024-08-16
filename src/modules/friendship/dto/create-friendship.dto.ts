@@ -2,8 +2,8 @@ import { IsUUID } from 'class-validator';
 
 export class CreateFriendshipDto {
   @IsUUID()
-  userId: string;
+  user: string;
 
   @IsUUID()
-  friendId: string;
+  friend: string;
 }
