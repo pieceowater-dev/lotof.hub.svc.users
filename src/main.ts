@@ -12,4 +12,4 @@ bootstrap(AppModule, {
       queue: 'users_queue',
     },
   ],
-}).then((r) => console.log('Booted successfully 🚀'));
+}).then(() => console.log('Booted successfully 🚀'));

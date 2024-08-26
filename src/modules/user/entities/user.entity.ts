@@ -1,10 +1,11 @@
 import {
   Column,
+  JoinTable,
   Entity,
   PrimaryGeneratedColumn,
-  BeforeInsert,
-  BeforeUpdate,
+  ManyToMany,
 } from 'typeorm';
+import { BeforeInsert, BeforeUpdate } from 'typeorm';
 import { hashSync, genSaltSync } from 'bcrypt';
 import { UserState } from '../../../utils/user/user-state.util';
 
@@ -21,6 +22,20 @@ export class User {
 
   @Column({ select: false })
   password: string;
+
+  @ManyToMany(() => User, (user) => user.friends)
+  @JoinTable({
+    name: 'friendships',
+    joinColumn: {
+      name: 'userId',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'friendId',
+      referencedColumnName: 'id',
+    },
+  })
+  friends: User[];
 
   @Column({ nullable: true, default: UserState.SUSPENDED })
   state: UserState;
