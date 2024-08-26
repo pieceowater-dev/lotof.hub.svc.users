@@ -122,7 +122,7 @@ export class FriendshipService {
 
   private async findFriendRequestById(id: number): Promise<Friendship | null> {
     return await this.friendshipRepository.findOne({
-      relations: ['userId', 'friendId'],
+      relations: ['user', 'friend'],
       where: { id },
     });
   }

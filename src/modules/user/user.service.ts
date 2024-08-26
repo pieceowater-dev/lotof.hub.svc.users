@@ -49,10 +49,15 @@ export class UserService {
   }
 
   async findOneWithFriends(id: string): Promise<User> {
-    return await this.userRepository.findOne({
-      relations: ['friends'],
-      where: { id },
-    });
+    return await this.userRepository
+      .findOne({
+        relations: ['friends'],
+        where: { id },
+      })
+      .then((res) => {
+        console.log(res);
+        return res;
+      });
   }
 
   async update(id: string, data: UpdateUserDto): Promise<User> {
