@@ -38,7 +38,8 @@ ENV NODE_ENV=production
 ARG BUILD_MODE
 ENV MODE=$BUILD_MODE
 
-# Expose ports
+ENV PORT=3000
+# Expose port
 EXPOSE 3000
 
 # Run the application

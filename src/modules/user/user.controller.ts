@@ -1,17 +1,21 @@
-import { Controller, UseFilters } from '@nestjs/common';
+import { Controller, UseFilters, UsePipes } from '@nestjs/common';
 import { UserService } from './user.service';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { CreateUserDto } from './dto/create-user.dto';
-import { DefaultFilter } from '../../utils/default.filter';
 import { User } from './entities/user.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ID } from '../../utils/ID';
-import { ExceptionFilter } from '@pieceowater-dev/lotof.lib.broadcaster';
+import { UserUuid } from '../../utils/user/user-uuid';
+import {
+  DefaultFilter,
+  ExceptionFilter,
+  ServiceRequestTimeoutPipe,
+} from '@pieceowater-dev/lotof.lib.broadcaster';
 
 @Controller()
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @UsePipes(new ServiceRequestTimeoutPipe())
   @UseFilters(new ExceptionFilter())
   @MessagePattern('createUser')
   create(@Payload() data: CreateUserDto) {
@@ -24,7 +28,7 @@ export class UserController {
   }
 
   @MessagePattern('findOneUser')
-  findOne({ id }: ID) {
+  findOne({ id }: UserUuid) {
     return this.userService.findOne(id);
   }
 

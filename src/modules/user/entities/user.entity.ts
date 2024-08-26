@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 import { BeforeInsert, BeforeUpdate } from 'typeorm';
 import { hashSync, genSaltSync } from 'bcrypt';
+import { UserState } from '../../../utils/user/user-state.util';
 
 @Entity()
 export class User {
@@ -35,6 +36,12 @@ export class User {
     },
   })
   friends: User[];
+
+  @Column({ nullable: true, default: UserState.SUSPENDED })
+  state: UserState;
+
+  @Column({ default: false })
+  deleted: boolean;
 
   @BeforeInsert()
   @BeforeUpdate()

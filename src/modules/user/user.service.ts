@@ -2,12 +2,10 @@ import { Inject, Injectable } from '@nestjs/common';
 import { User } from './entities/user.entity';
 import { ILike, Repository, EntityManager } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
-import { DefaultFilter } from '../../utils/default.filter';
-import { PaginatedEntity } from '../../utils/paginated.entity';
-import { toPaginated } from '../../utils/toPaginated';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { plainToInstance } from 'class-transformer';
-import { ServiceError } from '@pieceowater-dev/lotof.lib.broadcaster';
+import { DefaultFilter, ServiceError, toPaginated } from '@pieceowater-dev/lotof.lib.broadcaster';
+import { PaginatedEntity } from '@pieceowater-dev/lotof.lib.broadcaster/utils/pagination/entity.pagination';
 
 @Injectable()
 export class UserService {
