@@ -5,12 +5,10 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { plainToInstance } from 'class-transformer';
 import {
-  DefaultFilter,
   ServiceError,
   toPaginated,
 } from '@pieceowater-dev/lotof.lib.broadcaster';
 import { PaginatedEntity } from '@pieceowater-dev/lotof.lib.broadcaster/utils/pagination/entity.pagination';
-import { TransformedDefaultFilter } from '../../utils/transformed.default.filter';
 import { UserFilterDto } from './dto/user.filter.dto';
 
 @Injectable()

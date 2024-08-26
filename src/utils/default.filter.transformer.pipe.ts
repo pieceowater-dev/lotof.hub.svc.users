@@ -16,8 +16,6 @@ export class DefaultFilterTransformerPipe<Entity, FilterEntity>
     value: DefaultFilter<Entity> & FilterEntity,
     metadata: ArgumentMetadata,
   ): TransformedDefaultFilter<Entity> & FilterEntity {
-    console.log(metadata);
-
     const order = value.sort?.field
       ? ({
           [value.sort.field as keyof Entity]: {
