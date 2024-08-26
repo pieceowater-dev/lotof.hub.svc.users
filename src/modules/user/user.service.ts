@@ -4,8 +4,14 @@ import { ILike, Repository, EntityManager } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { plainToInstance } from 'class-transformer';
-import { DefaultFilter, ServiceError, toPaginated } from '@pieceowater-dev/lotof.lib.broadcaster';
+import {
+  DefaultFilter,
+  ServiceError,
+  toPaginated,
+} from '@pieceowater-dev/lotof.lib.broadcaster';
 import { PaginatedEntity } from '@pieceowater-dev/lotof.lib.broadcaster/utils/pagination/entity.pagination';
+import { TransformedDefaultFilter } from '../../utils/transformed.default.filter';
+import { UserFilterDto } from './dto/user.filter.dto';
 
 @Injectable()
 export class UserService {
@@ -25,19 +31,17 @@ export class UserService {
       });
   }
 
-  async findAll(data: DefaultFilter<User>): Promise<PaginatedEntity<User>> {
+  async findAll(userFilterDto: UserFilterDto): Promise<PaginatedEntity<User>> {
     return await this.userRepository
       .findAndCount({
         where: {
-          username: data.search
-            ? ILike(`%${data.search?.toLowerCase()}%`)
+          username: userFilterDto.search
+            ? ILike(`%${userFilterDto.search?.toLowerCase()}%`)
             : undefined,
         },
-        skip: data.pagination.page * data.pagination.len,
-        take: data.pagination.len,
-        order: {
-          [data.sort.field ?? 'id']: data.sort.by ?? 'DESC',
-        },
+        skip: userFilterDto.skip,
+        take: userFilterDto.take,
+        order: userFilterDto.order,
       })
       .then(toPaginated<User>);
   }

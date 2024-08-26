@@ -6,10 +6,12 @@ import { User } from './entities/user.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserUuid } from '../../utils/user/user-uuid';
 import {
-  DefaultFilter,
   ExceptionFilter,
   ServiceRequestTimeoutPipe,
 } from '@pieceowater-dev/lotof.lib.broadcaster';
+import { DefaultFilterTransformerPipe } from '../../utils/default.filter.transformer.pipe';
+import { ID } from '../../utils/ID';
+import { UserFilterDto } from './dto/user.filter.dto';
 
 @Controller()
 export class UserController {
@@ -22,8 +24,9 @@ export class UserController {
     return this.userService.create(data);
   }
 
+  @UsePipes(new DefaultFilterTransformerPipe<User, UserFilterDto>())
   @MessagePattern('findAllUser')
-  findAll(data: DefaultFilter<User>) {
+  findAll(data: UserFilterDto) {
     return this.userService.findAll(data);
   }
 

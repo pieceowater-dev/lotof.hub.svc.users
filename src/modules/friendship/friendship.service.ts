@@ -4,10 +4,12 @@ import { CreateFriendshipDto } from './dto/create-friendship.dto';
 import { Friendship } from './entities/friendship.entity';
 import { plainToInstance } from 'class-transformer';
 import { User } from '../user/entities/user.entity';
-import { ServiceError } from '@pieceowater-dev/lotof.lib.broadcaster';
+import {
+  ServiceError,
+  PaginatedEntity,
+  toPaginated,
+} from '@pieceowater-dev/lotof.lib.broadcaster';
 import { UserService } from '../user/user.service';
-import { PaginatedEntity } from '../../utils/paginated.entity';
-import { toPaginated } from '../../utils/toPaginated';
 import { FriendshipFilter } from './entities/friendship.filter';
 import { InOut } from './enum/InOut';
 
