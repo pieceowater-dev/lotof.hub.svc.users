@@ -48,6 +48,10 @@ export class UserService {
     return await this.userRepository.findOneBy({ id });
   }
 
+  async findOneByEmail(email: string): Promise<User> {
+    return await this.userRepository.findOneBy({ email });
+  }
+
   async findOneWithFriends(id: string): Promise<User> {
     return await this.userRepository.findOne({
       relations: ['friends'],

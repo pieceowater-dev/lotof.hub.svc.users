@@ -5,8 +5,6 @@ import {
   PrimaryGeneratedColumn,
   ManyToMany,
 } from 'typeorm';
-import { BeforeInsert, BeforeUpdate } from 'typeorm';
-import { hashSync, genSaltSync } from 'bcrypt';
 import { UserState } from '../../../utils/user/user-state.util';
 
 @Entity()
@@ -19,9 +17,6 @@ export class User {
 
   @Column({ unique: true, update: false })
   email: string;
-
-  @Column({ select: false })
-  password: string;
 
   @ManyToMany(() => User, (user) => user.friends)
   @JoinTable({
@@ -42,12 +37,4 @@ export class User {
 
   @Column({ default: false })
   deleted: boolean;
-
-  @BeforeInsert()
-  @BeforeUpdate()
-  passwordCrypt() {
-    if (this.password) {
-      this.password = hashSync(this.password, genSaltSync());
-    }
-  }
 }

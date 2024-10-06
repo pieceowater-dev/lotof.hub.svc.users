@@ -12,6 +12,7 @@ import {
 import { DefaultFilterTransformerPipe } from '../../utils/default.filter.transformer.pipe';
 import { ID } from '../../utils/ID';
 import { UserFilterDto } from './dto/user.filter.dto';
+import { UserEmail } from './types/user-email';
 
 @Controller()
 export class UserController {
@@ -33,6 +34,11 @@ export class UserController {
   @MessagePattern('findOneUser')
   findOne({ id }: UserUuid) {
     return this.userService.findOne(id);
+  }
+
+  @MessagePattern('findOneUserByEmail')
+  findOneByEmail({ email }: UserEmail) {
+    return this.userService.findOneByEmail(email);
   }
 
   @MessagePattern('findOneUserWithFriends')
