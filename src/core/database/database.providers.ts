@@ -9,10 +9,16 @@ export const databaseProviders = [
       new DataSource({
         type: 'postgres',
         entities: [__dirname + '/../../**/*.entity{.ts,.js}'],
-        synchronize: true,
+        migrations: [__dirname + '/../../**/*.migrations{.ts,.js}'],
+        synchronize: false,
         url: configService.get<string>('db'),
         logging: true,
-      }).initialize(),
+      })
+        .initialize()
+        .then(async (source) => {
+          await source.runMigrations();
+          return source;
+        }),
     inject: [ConfigService],
   },
 ];

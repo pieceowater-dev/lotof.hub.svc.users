@@ -4,19 +4,25 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   ManyToMany,
+  BeforeInsert,
+  BeforeUpdate,
 } from 'typeorm';
 import { UserState } from '../../../utils/user/user-state.util';
+import { genSaltSync, hashSync } from 'bcrypt';
 
 @Entity()
 export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({ type: 'varchar', length: 255 })
   username: string;
 
-  @Column({ unique: true, update: false })
+  @Column({ type: 'varchar', length: 255, unique: true, update: false })
   email: string;
+
+  @Column({ type: 'varchar', length: 255 })
+  password: string;
 
   @ManyToMany(() => User, (user) => user.friends)
   @JoinTable({
@@ -37,4 +43,23 @@ export class User {
 
   @Column({ default: false })
   deleted: boolean;
+
+  @Column({ type: 'timestamp without time zone', default: () => 'now()' })
+  createdAt: string;
+
+  @Column({ type: 'timestamp without time zone', default: () => 'now()' })
+  updatedAt: string;
+
+  @BeforeInsert()
+  @BeforeUpdate()
+  encryptPasswordIfExist() {
+    if (this.password) {
+      this.password = hashSync(this.password, genSaltSync(12));
+    }
+  }
+
+  @BeforeUpdate()
+  setUpdatedAtDate() {
+    this.updatedAt = new Date().toJSON();
+  }
 }

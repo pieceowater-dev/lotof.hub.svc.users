@@ -2,5 +2,5 @@ import { TransformedDefaultFilter } from '../../../utils/transformed.default.fil
 import { User } from '../entities/user.entity';
 
 export class UserFilterDto extends TransformedDefaultFilter<
-  Omit<User, 'passwordCrypt' | 'friends'>
+  Omit<User, 'encryptPasswordIfExist' | 'setUpdatedAtDate' | 'friends'>
 > {}
